@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuTEK Customs — Premium Auto Protection | Bakersfield, CA</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <!-- GSAP + ScrollTrigger + SplitText -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+  <style>
+    /* ─────────────────────────────────────────
+       RESET & BASE
+    ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:    #3ECFCF;
+      --gold-lt: #6EDDDD;
+      --white:   #F5F5F0;
+      --off:     #AAAAAA;
+      --bg:      #080808;
+      --bg2:     #0F0F0F;
+      --bg3:     #141414;
+      --border:  rgba(62,207,207,.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    ::selection { background: var(--gold); color: #000; }
+
+    /* ─────────────────────────────────────────
+       CUSTOM CURSOR
+    ───────────────────────────────────────── */
+    #cursor-dot {
+      position: fixed; width: 8px; height: 8px;
+      background: var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .15s, height .15s, background .15s;
+    }
+    #cursor-ring {
+      position: fixed; width: 36px; height: 36px;
+      border: 1.5px solid rgba(62,207,207,.6);
+      border-radius: 50%; pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+    }
+    body:has(a:hover) #cursor-dot,
+    body:has(button:hover) #cursor-dot { width: 14px; height: 14px; background: var(--gold-lt); }
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring { width: 56px; height: 56px; border-color: var(--gold); }
+
+    /* ─────────────────────────────────────────
+       NOISE OVERLAY
+    ───────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 9990;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: .025; pointer-events: none;
+    }
+
+    /* ─────────────────────────────────────────
+       SCROLLBAR
+    ───────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+    /* ─────────────────────────────────────────
+       NAV
+    ───────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+      padding: 24px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background .4s, padding .4s, border-bottom .4s;
+    }
+    nav.scrolled {
+      background: rgba(8,8,8,.92);
+      backdrop-filter: blur(20px);
+      padding: 16px 60px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: .12em;
+      color: var(--white);
+      text-decoration: none;
+      line-height: 1;
+    }
+    .nav-logo span { color: var(--gold); }
+
+    .nav-links {
+      display: flex; gap: 40px; list-style: none;
+    }
+    .nav-links a {
+      color: var(--off); font-size: .78rem; font-weight: 500;
+      text-decoration: none; letter-spacing: .14em; text-transform: uppercase;
+      position: relative; transition: color .3s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; left: 0; bottom: -4px;
+      width: 0; height: 1px; background: var(--gold);
+      transition: width .3s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--gold); color: #000;
+      padding: 11px 28px; font-size: .78rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      text-decoration: none; transition: background .3s, color .3s;
+      clip-path: polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px);
+    }
+    .nav-cta:hover { background: var(--gold-lt); }
+
+    /* ─────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────── */
+    #hero {
+      position: relative; height: 100vh; min-height: 700px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+    }
+
+    /* Animated gradient background */
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%,
+        rgba(62,207,207,.08) 0%,
+        transparent 70%),
+        var(--bg);
+    }
+
+    /* Grid lines */
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(62,207,207,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(62,207,207,.04) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(62,207,207,.12), transparent 70%);
+      top: -100px; left: -100px;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(62,207,207,.08), transparent 70%);
+      bottom: 0; right: -80px;
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid var(--border);
+      padding: 7px 18px; border-radius: 2px;
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 32px;
+      background: rgba(62,207,207,.04);
+    }
+    .hero-tag::before {
+      content: ''; width: 6px; height: 6px;
+      background: var(--gold); border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(.7); }
+    }
+
+    .hero-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 12vw, 11rem);
+      line-height: .92;
+      letter-spacing: .04em;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .hero-h1 .gold { color: var(--gold); }
+
+    .hero-sub {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      color: var(--off);
+      margin-bottom: 48px;
+      letter-spacing: .02em;
+    }
+
+    .hero-actions {
+      display: flex; gap: 16px; align-items: center; justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--gold); color: #000;
+      padding: 16px 40px; font-size: .82rem; font-weight: 700;
+      letter-spacing: .16em; text-transform: uppercase;
+      text-decoration: none; transition: all .3s;
+      clip-path: polygon(10px 0%,100% 0%,100% calc(100% - 10px),calc(100% - 10px) 100%,0% 100%,0% 10px);
+    }
+    .btn-primary:hover { background: var(--gold-lt); transform: translateY(-2px); }
+    .btn-primary svg { transition: transform .3s; }
+    .btn-primary:hover svg { transform: translateX(4px); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid var(--border); color: var(--white);
+      padding: 15px 40px; font-size: .82rem; font-weight: 500;
+      letter-spacing: .14em; text-transform: uppercase;
+      text-decoration: none; transition: all .3s;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      font-size: .65rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--off); z-index: 2;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ─────────────────────────────────────────
+       MARQUEE STRIP
+    ───────────────────────────────────────── */
+    .marquee-strip {
+      background: var(--gold);
+      padding: 14px 0; overflow: hidden;
+      position: relative;
+    }
+    .marquee-track {
+      display: flex; white-space: nowrap;
+      will-change: transform;
+    }
+    .marquee-inner {
+      display: flex; flex-shrink: 0;
+    }
+    .marquee-item {
+      display: inline-flex; align-items: center; gap: 20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: .14em; color: #000;
+      padding: 0 36px;
+    }
+    .marquee-dot { width: 5px; height: 5px; background: rgba(0,0,0,.35); border-radius: 50%; }
+
+    /* ─────────────────────────────────────────
+       SECTION COMMON
+    ───────────────────────────────────────── */
+    section { padding: 120px 60px; }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-size: .68rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px;
+    }
+    .section-label::before {
+      content: ''; display: block; width: 28px; height: 1px; background: var(--gold);
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: .95; letter-spacing: .04em;
+      color: var(--white);
+    }
+    .section-title .gold { color: var(--gold); }
+
+    .section-body {
+      font-size: .95rem; color: var(--off);
+      line-height: 1.8; max-width: 540px;
+    }
+
+    /* ─────────────────────────────────────────
+       SERVICES
+    ───────────────────────────────────────── */
+    #services { background: var(--bg2); }
+
+    .services-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 72px; gap: 40px; flex-wrap: wrap;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .service-card {
+      position: relative; overflow: hidden;
+      background: var(--bg3);
+      padding: 52px 44px;
+      border: 1px solid transparent;
+      transition: border-color .4s;
+      cursor: none;
+    }
+    .service-card::before {
+      content: ''; position: absolute;
+      inset: 0; background: linear-gradient(135deg, rgba(62,207,207,.06), transparent 60%);
+      opacity: 0; transition: opacity .4s;
+    }
+    .service-card:hover { border-color: var(--border); }
+    .service-card:hover::before { opacity: 1; }
+
+    .service-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem; line-height: 1;
+      color: rgba(62,207,207,.08);
+      position: absolute; top: 24px; right: 32px;
+      transition: color .4s;
+    }
+    .service-card:hover .service-num { color: rgba(62,207,207,.14); }
+
+    .service-icon {
+      width: 52px; height: 52px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 28px;
+      transition: border-color .4s, background .4s;
+    }
+    .service-card:hover .service-icon {
+      border-color: var(--gold);
+      background: rgba(62,207,207,.08);
+    }
+    .service-icon svg { width: 22px; height: 22px; }
+
+    .service-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem; letter-spacing: .06em;
+      color: var(--white); margin-bottom: 14px;
+      transition: color .3s;
+    }
+    .service-card:hover .service-title { color: var(--gold-lt); }
+
+    .service-desc {
+      font-size: .87rem; color: var(--off);
+      line-height: 1.75; margin-bottom: 32px;
+    }
+
+    .service-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: .75rem; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--gold); text-decoration: none;
+      transition: gap .3s;
+    }
+    .service-link:hover { gap: 14px; }
+    .service-link::after {
+      content: '→'; transition: transform .3s;
+    }
+
+    /* ─────────────────────────────────────────
+       STATS
+    ───────────────────────────────────────── */
+    #stats {
+      background: var(--bg);
+      padding: 80px 60px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .stat-item {
+      padding: 48px 40px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+    .stat-item:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      color: var(--gold); line-height: 1;
+      letter-spacing: .04em; margin-bottom: 10px;
+    }
+    .stat-label {
+      font-size: .75rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--off);
+    }
+
+    /* ─────────────────────────────────────────
+       XPEL / ABOUT SPLIT
+    ───────────────────────────────────────── */
+    #about {
+      background: var(--bg2);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+
+    .about-visual {
+      position: relative;
+    }
+    .about-img-frame {
+      position: relative;
+      aspect-ratio: 2/3;
+      background: var(--bg3);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .about-img-frame::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 65%, rgba(8,8,8,.55));
+      pointer-events: none;
+    }
+    .about-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    .car-svg-wrap {
+      width: 85%; max-width: 340px;
+      opacity: .55;
+    }
+
+    .about-badge {
+      position: absolute; bottom: -20px; right: -20px;
+      background: var(--gold); color: #000;
+      width: 120px; height: 120px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    }
+    .about-badge-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem; line-height: 1; color: #000;
+    }
+    .about-badge-text {
+      font-size: .6rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase; color: #000;
+      text-align: center; line-height: 1.3;
+    }
+
+    .about-content {}
+    .about-content .section-body { margin: 24px 0 36px; max-width: 480px; }
+
+    .about-features {
+      display: flex; flex-direction: column; gap: 16px;
+      margin-top: 40px;
+    }
+    .feature-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      transition: border-color .3s, background .3s;
+    }
+    .feature-row:hover {
+      border-color: var(--gold);
+      background: rgba(62,207,207,.03);
+    }
+    .feature-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .feature-icon svg { width: 18px; height: 18px; fill: var(--gold); }
+    .feature-text {
+      font-size: .85rem; font-weight: 500; color: var(--white);
+      letter-spacing: .04em;
+    }
+    .feature-sub {
+      font-size: .78rem; color: var(--off); margin-top: 2px;
+    }
+
+    /* ─────────────────────────────────────────
+       TESTIMONIALS
+    ───────────────────────────────────────── */
+    #testimonials { background: var(--bg); }
+
+    .testimonials-header {
+      text-align: center; margin-bottom: 72px;
+    }
+
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .testi-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 40px;
+      position: relative; overflow: hidden;
+      transition: border-color .4s, transform .4s;
+    }
+    .testi-card:hover {
+      border-color: rgba(62,207,207,.35);
+      transform: translateY(-6px);
+    }
+    .testi-card::before {
+      content: '"';
+      position: absolute; top: -10px; right: 24px;
+      font-family: 'Playfair Display', serif;
+      font-size: 8rem; color: rgba(62,207,207,.07);
+      line-height: 1; pointer-events: none;
+    }
+
+    .stars {
+      display: flex; gap: 4px; margin-bottom: 20px;
+    }
+    .star { color: var(--gold); font-size: .9rem; }
+
+    .testi-text {
+      font-size: .9rem; color: #ccc;
+      line-height: 1.8; margin-bottom: 28px;
+      font-style: italic;
+    }
+
+    .testi-author {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .testi-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #1a9999);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: #000;
+      flex-shrink: 0;
+    }
+    .testi-name { font-weight: 600; font-size: .88rem; color: var(--white); }
+    .testi-source { font-size: .75rem; color: var(--gold); margin-top: 2px; }
+
+    /* ─────────────────────────────────────────
+       TESLA SECTION
+    ───────────────────────────────────────── */
+    #tesla {
+      background: var(--bg2);
+      position: relative; overflow: hidden;
+    }
+    .tesla-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .tesla-visual {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .tesla-img-main {
+      width: 100%; aspect-ratio: 16/9;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .tesla-img-main::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 70%, rgba(8,8,8,.4));
+      pointer-events: none; z-index: 1;
+    }
+    .tesla-logo-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(62,207,207,.08);
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      font-size: .75rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); align-self: flex-start;
+    }
+    .tesla-imgs-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .tesla-img-sm {
+      aspect-ratio: 4/3;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      cursor: pointer;
+    }
+    .tesla-img-sm img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      display: block;
+      transition: transform .5s ease;
+    }
+    .tesla-img-sm:hover img { transform: scale(1.07); }
+    .tesla-img-main img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 30%;
+      display: block;
+      transition: transform .5s ease;
+    }
+    .tesla-img-main:hover img { transform: scale(1.05); }
+
+    .tesla-content .section-body { margin: 24px 0 40px; }
+
+    .tesla-models {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px;
+    }
+    .model-chip {
+      padding: 8px 18px;
+      border: 1px solid var(--border);
+      font-size: .75rem; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--off);
+      transition: border-color .3s, color .3s;
+    }
+    .model-chip:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ─────────────────────────────────────────
+       CTA SECTION
+    ───────────────────────────────────────── */
+    #cta {
+      background: var(--bg);
+      text-align: center; padding: 140px 60px;
+      position: relative; overflow: hidden;
+    }
+    .cta-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%,
+        rgba(62,207,207,.07) 0%, transparent 70%);
+    }
+    .cta-inner { position: relative; z-index: 1; }
+
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: .92; letter-spacing: .04em;
+      margin-bottom: 24px;
+    }
+    .cta-title .line2 { color: var(--gold); }
+
+    .cta-sub {
+      font-size: 1rem; color: var(--off);
+      margin-bottom: 56px; max-width: 480px; margin-left: auto; margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .cta-actions {
+      display: flex; gap: 16px; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 60px;
+    }
+
+    .contact-row {
+      display: flex; gap: 48px; justify-content: center;
+      flex-wrap: wrap;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+    .contact-item {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .contact-label {
+      font-size: .65rem; letter-spacing: .24em;
+      text-transform: uppercase; color: var(--off);
+    }
+    .contact-value {
+      font-size: .95rem; font-weight: 500; color: var(--white);
+      text-decoration: none; transition: color .3s;
+    }
+    .contact-value:hover { color: var(--gold); }
+
+    /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+    footer {
+      background: #050505;
+      border-top: 1px solid var(--border);
+      padding: 40px 60px;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 20px;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: .12em;
+      color: var(--off); text-decoration: none;
+    }
+    .footer-logo span { color: var(--gold); }
+    .footer-links {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .footer-links a {
+      font-size: .72rem; letter-spacing: .16em;
+      text-transform: uppercase; color: rgba(170,170,170,.6);
+      text-decoration: none; transition: color .3s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy {
+      font-size: .72rem; color: rgba(170,170,170,.35);
+      letter-spacing: .06em;
+    }
+
+    /* ─────────────────────────────────────────
+       PROGRESS LINE
+    ───────────────────────────────────────── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-lt));
+      transition: width .1s linear;
+    }
+
+    /* ─────────────────────────────────────────
+       REVEAL CLASSES (GSAP targets)
+    ───────────────────────────────────────── */
+    .reveal { opacity: 0; }
+    .reveal-up { opacity: 0; transform: translateY(40px); }
+    .reveal-left { opacity: 0; transform: translateX(-40px); }
+    .reveal-right { opacity: 0; transform: translateX(40px); }
+    .char { display: inline-block; }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      section { padding: 80px 32px; }
+      nav { padding: 20px 32px; }
+      nav.scrolled { padding: 14px 32px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      #about { grid-template-columns: 1fr; gap: 48px; padding: 80px 32px; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .tesla-inner { grid-template-columns: 1fr; gap: 48px; padding: 80px 32px; }
+      #tesla { padding: 80px 0; }
+      #cta { padding: 100px 32px; }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero-h1 { font-size: clamp(3.5rem, 18vw, 6rem); }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-item { padding: 32px 20px; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Custom cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ══════════════════ NAV ══════════════════ -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">NEU<span>TEK</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="tesla.html">Tesla</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+    </ul>
+    <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="nav-cta">Book Now</a>
+  </nav>
+
+  <!-- ══════════════════ HERO ══════════════════ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="hero-content">
+      <div class="hero-tag reveal" id="hero-tag">XPEL Certified Installer · Bakersfield, CA</div>
+
+      <h1 class="hero-h1">
+        <div class="hero-line" id="hero-line1">PROTECT</div>
+        <div class="hero-line gold" id="hero-line2">YOUR RIDE.</div>
+        <div class="hero-line" id="hero-line3">ELEVATE</div>
+        <div class="hero-line gold" id="hero-line4">YOUR STYLE.</div>
+      </h1>
+
+      <p class="hero-sub reveal" id="hero-sub">
+        Bakersfield's premier destination for premium window tint,<br/>
+        paint protection film &amp; ceramic coating.
+      </p>
+
+      <div class="hero-actions reveal" id="hero-actions">
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="btn-primary">
+          Book Your Appointment
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#services" class="btn-ghost">Explore Services</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ MARQUEE ══════════════════ -->
+  <div class="marquee-strip">
+    <div class="marquee-track" id="marquee-track">
+      <div class="marquee-inner" id="marquee-a">
+        <div class="marquee-item">Window Tint<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Paint Protection Film<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Ceramic Coating<div class="marquee-dot"></div></div>
+        <div class="marquee-item">XPEL Certified<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Tesla Experts<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Bakersfield #1<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Premium Results<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Auto Detailing<div class="marquee-dot"></div></div>
+      </div>
+      <div class="marquee-inner" id="marquee-b">
+        <div class="marquee-item">Window Tint<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Paint Protection Film<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Ceramic Coating<div class="marquee-dot"></div></div>
+        <div class="marquee-item">XPEL Certified<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Tesla Experts<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Bakersfield #1<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Premium Results<div class="marquee-dot"></div></div>
+        <div class="marquee-item">Auto Detailing<div class="marquee-dot"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ SERVICES ══════════════════ -->
+  <section id="services">
+    <div class="services-header">
+      <div>
+        <div class="section-label reveal-up">What We Do</div>
+        <h2 class="section-title reveal-up">PREMIUM<br/><span class="gold">PROTECTION</span></h2>
+      </div>
+      <p class="section-body reveal-up">
+        Every vehicle deserves the finest defense. We use only industry-leading products and precision installation techniques to keep your investment looking flawless.
+      </p>
+    </div>
+
+    <div class="services-grid">
+      <!-- Card 1 -->
+      <div class="service-card">
+        <div class="service-num">01</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="6" width="18" height="12" rx="2"/>
+            <path d="M3 10h18M7 6V4M17 6V4"/>
+          </svg>
+        </div>
+        <div class="service-title">Ceramic Window Tint</div>
+        <div class="service-desc">
+          Block up to 99% of UV rays and dramatically reduce interior heat with our advanced ceramic film technology. Available in multiple shades for any aesthetic. Our XPEL PRIME films are color-stable, non-metallic, and built to last.
+        </div>
+        <a href="https://www.neutekcustoms.com/windowfilm" class="service-link">Learn More</a>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="service-card">
+        <div class="service-num">02</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2L3 7v10l9 5 9-5V7L12 2z"/>
+            <path d="M12 22V12M3 7l9 5 9-5"/>
+          </svg>
+        </div>
+        <div class="service-title">Paint Protection Film</div>
+        <div class="service-desc">
+          Self-healing, virtually invisible XPEL PPF shields your paint from rock chips, road debris, and everyday abrasions. Full-front, partial, or full-body coverage available. Preserve your paint and your vehicle's resale value.
+        </div>
+        <a href="https://www.neutekcustoms.com/paint-protection-film" class="service-link">Learn More</a>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="service-card">
+        <div class="service-num">03</div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 3a9 9 0 0 1 6.36 15.36"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <div class="service-title">Ceramic Coating</div>
+        <div class="service-desc">
+          A nano-ceramic layer that chemically bonds to your factory paint, delivering years of hydrophobic protection and deep gloss. Repels water, dirt, and contaminants — making every wash effortless.
+        </div>
+        <a href="https://www.neutekcustoms.com" class="service-link">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ STATS ══════════════════ -->
+  <div id="stats">
+    <div class="stats-grid">
+      <div class="stat-item reveal-up">
+        <div class="stat-num" data-count="500">0</div>
+        <div class="stat-label">5-Star Reviews</div>
+      </div>
+      <div class="stat-item reveal-up" data-delay=".1">
+        <div class="stat-num" data-count="3000">0</div>
+        <div class="stat-label">Vehicles Completed</div>
+      </div>
+      <div class="stat-item reveal-up" data-delay=".2">
+        <div class="stat-num" data-count="10">0</div>
+        <div class="stat-label">Years of Expertise</div>
+      </div>
+      <div class="stat-item reveal-up" data-delay=".3">
+        <div class="stat-num" data-count="99">0</div>
+        <div class="stat-label">% UV Rejection</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ ABOUT ══════════════════ -->
+  <section id="about">
+    <div class="about-visual reveal-left">
+      <div class="about-img-frame">
+        <div class="about-img-placeholder">
+          <img src="tesla car.jpg" alt="Teal Tesla Model 3 in NeuTEK Customs shop" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block;image-rendering:auto;" />
+        </div>
+      </div>
+      <div class="about-badge">
+        <div class="about-badge-num">A+</div>
+        <div class="about-badge-text">Family<br/>Owned</div>
+      </div>
+    </div>
+
+    <div class="about-content">
+      <div class="section-label reveal-up">Our Story</div>
+      <h2 class="section-title reveal-up">CRAFTED<br/><span class="gold">WITH PRIDE</span></h2>
+      <p class="section-body reveal-up">
+        NeuTEK Customs is a family business founded by two brothers passionate about protecting what matters most — your vehicle. From our shop at 5920 Nathaniel Way in Bakersfield, we combine precision craftsmanship with industry-leading XPEL products to deliver results that speak for themselves.
+      </p>
+      <p class="section-body reveal-up" style="margin-top:14px">
+        As the official preferred tint shop of Tesla of Bakersfield, we bring specialized expertise to every EV — and every vehicle that comes through our doors.
+      </p>
+
+      <div class="about-features">
+        <div class="feature-row reveal-up">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <div class="feature-text">XPEL Authorized Dealer</div>
+            <div class="feature-sub">Factory-backed warranty on all XPEL products</div>
+          </div>
+        </div>
+        <div class="feature-row reveal-up">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="feature-text">Lifetime Warranty Available</div>
+            <div class="feature-sub">Peace of mind protection on select packages</div>
+          </div>
+        </div>
+        <div class="feature-row reveal-up">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div>
+            <div class="feature-text">Appointment-Only Shop</div>
+            <div class="feature-sub">Dedicated, undivided attention for your vehicle</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ TESTIMONIALS ══════════════════ -->
+  <section id="testimonials">
+    <div class="testimonials-header">
+      <div class="section-label reveal-up" style="justify-content:center">Customer Reviews</div>
+      <h2 class="section-title reveal-up">WHAT PEOPLE <span class="gold">SAY</span></h2>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="testi-text">"NeuTEK Customs has great customer service. They made sure I was happy with the final result. Great company that truly cares about their customers."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">M</div>
+          <div>
+            <div class="testi-name">Marisol A.</div>
+            <div class="testi-source">★ Google Review</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="testi-text">"A family business operated by two brothers who decided to share their skills. Go visit their store and meet the owners. I wasn't disappointed — outstanding work."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">A</div>
+          <div>
+            <div class="testi-name">Alvin C.</div>
+            <div class="testi-source">★ Google Review</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="testi-text">"Really great service and caring employees, also a really comfortable waiting area with free water, snacks etc. 100% would recommend if you want the job done right!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar">A</div>
+          <div>
+            <div class="testi-name">Aby N.</div>
+            <div class="testi-source">★ Google Review</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ TESLA ══════════════════ -->
+  <section id="tesla" style="padding: 120px 60px;">
+    <div class="tesla-inner">
+      <div class="tesla-content">
+        <div class="section-label reveal-up">Specialty</div>
+        <h2 class="section-title reveal-up">TESLA<br/><span class="gold">EXPERTS</span></h2>
+        <p class="section-body reveal-up" style="margin-top:24px">
+          As the preferred tint shop of Tesla of Bakersfield, we've perfected the art of protecting every Tesla model. Our technicians understand the unique curves, glass panels, and requirements of every EV in Tesla's lineup.
+        </p>
+        <p class="section-body reveal-up" style="margin-top:14px">
+          From full-body PPF to ceramic coatings and window tinting optimized for autopilot camera clarity — we've got your Tesla covered.
+        </p>
+
+        <div class="tesla-models reveal-up" style="margin-top:40px">
+          <div class="model-chip">Model S</div>
+          <div class="model-chip">Model 3</div>
+          <div class="model-chip">Model X</div>
+          <div class="model-chip">Model Y</div>
+          <div class="model-chip">Cybertruck</div>
+        </div>
+
+        <div style="margin-top:44px" class="reveal-up">
+          <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="btn-primary">
+            Schedule Tesla Service
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="tesla-visual reveal-right">
+        <div class="tesla-logo-badge">
+          ⚡ Tesla of Bakersfield Preferred Partner
+        </div>
+        <div class="tesla-img-main">
+          <img src="tesla office.jpg .png" alt="Tesla of Bakersfield" />
+        </div>
+        <div class="tesla-imgs-row">
+          <div class="tesla-img-sm">
+            <img src="truck .jpg" alt="Tesla Cybertruck" />
+          </div>
+          <div class="tesla-img-sm">
+            <img src="white car.jpg" alt="Tesla Model X" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ CTA ══════════════════ -->
+  <section id="cta">
+    <div class="cta-bg"></div>
+    <div class="cta-inner">
+      <div class="section-label reveal-up" style="justify-content:center">Get Started</div>
+      <h2 class="cta-title reveal-up">
+        YOUR CAR<br/>
+        <span class="line2">DESERVES THE BEST.</span>
+      </h2>
+      <p class="cta-sub reveal-up">
+        Book your appointment online or give us a call. We're appointment-only — so you get our full attention from start to finish.
+      </p>
+      <div class="cta-actions reveal-up">
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="btn-primary">
+          Book Appointment
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="tel:6619322642" class="btn-ghost">(661) 932-2642</a>
+      </div>
+
+      <div class="contact-row reveal-up">
+        <div class="contact-item">
+          <span class="contact-label">Phone</span>
+          <a href="tel:6619322642" class="contact-value">(661) 932-2642</a>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">Address</span>
+          <span class="contact-value">5920 Nathaniel Way Suite 300, Bakersfield CA 93313</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">Hours</span>
+          <span class="contact-value">Mon–Sun · Appointment Only</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer>
+    <a href="#" class="footer-logo">NEU<span>TEK</span> CUSTOMS</a>
+    <ul class="footer-links">
+      <li><a href="https://www.neutekcustoms.com/windowfilm">Window Film</a></li>
+      <li><a href="https://www.neutekcustoms.com/paint-protection-film">PPF</a></li>
+      <li><a href="https://www.neutekcustoms.com/about-1">About</a></li>
+      <li><a href="https://www.neutekcustoms.com/privacy-policy">Privacy</a></li>
+    </ul>
+    <span class="footer-copy">© 2026 NeuTEK Customs, Inc. All rights reserved.</span>
+  </footer>
+
+  <!-- ══════════════════ SCRIPTS ══════════════════ -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+    /* ─── Cursor ─── */
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+    (function animate() {
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      dot.style.left  = mx + 'px';
+      dot.style.top   = my + 'px';
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animate);
+    })();
+
+    /* ─── Progress bar ─── */
+    const bar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+      bar.style.width = scrolled + '%';
+    });
+
+    /* ─── Navbar scroll ─── */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    /* ─── Smooth anchor scroll ─── */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); gsap.to(window, { scrollTo: target, duration: 1.2, ease: 'power3.inOut' }); }
+      });
+    });
+
+    /* ─── Hero entrance ─── */
+    const heroTL = gsap.timeline({ delay: .3 });
+
+    heroTL
+      .from('#hero-tag', { opacity: 0, y: 20, duration: .8, ease: 'power3.out' })
+      .from(['#hero-line1','#hero-line2','#hero-line3','#hero-line4'], {
+        opacity: 0, y: 80, skewY: 4,
+        stagger: .12, duration: .9, ease: 'power4.out'
+      }, '-=.4')
+      .from('#hero-sub', { opacity: 0, y: 24, duration: .7, ease: 'power3.out' }, '-=.3')
+      .from('#hero-actions', { opacity: 0, y: 20, duration: .7, ease: 'power3.out' }, '-=.4');
+
+    /* ─── Orb parallax ─── */
+    gsap.to('.orb-1', {
+      y: -120, x: 40,
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 }
+    });
+    gsap.to('.orb-2', {
+      y: -80, x: -30,
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 2 }
+    });
+
+    /* ─── Generic scroll reveals ─── */
+    function revealAll(selector, props) {
+      document.querySelectorAll(selector).forEach(el => {
+        const delay = parseFloat(el.dataset.delay || 0);
+        gsap.to(el, {
+          ...props,
+          opacity: 1,
+          duration: .9,
+          delay,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none none'
+          }
+        });
+      });
+    }
+
+    revealAll('.reveal',       {});
+    revealAll('.reveal-up',    { y: 0 });
+    revealAll('.reveal-left',  { x: 0 });
+    revealAll('.reveal-right', { x: 0 });
+
+    /* ─── Stat counters ─── */
+    document.querySelectorAll('.stat-num[data-count]').forEach(el => {
+      const target = parseInt(el.dataset.count);
+      const suffix = target >= 3000 ? '+' : (el.parentElement.querySelector('.stat-label').textContent.includes('%') ? '%' : '+');
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 85%',
+        onEnter: () => {
+          gsap.to({ val: 0 }, {
+            val: target,
+            duration: 2.4,
+            ease: 'power2.out',
+            onUpdate: function() {
+              el.textContent = Math.round(this.targets()[0].val).toLocaleString() + suffix;
+            }
+          });
+        },
+        once: true
+      });
+    });
+
+    /* ─── Service cards stagger ─── */
+    gsap.fromTo('.service-card',
+      { opacity: 0, y: 60 },
+      {
+        opacity: 1, y: 0, stagger: .15,
+        duration: .9, ease: 'power3.out',
+        scrollTrigger: { trigger: '.services-grid', start: 'top 85%', toggleActions: 'play none none none' }
+      }
+    );
+
+    /* ─── Testimonial stagger ─── */
+    gsap.fromTo('.testi-card',
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1, y: 0, stagger: .15,
+        duration: .9, ease: 'power3.out',
+        scrollTrigger: { trigger: '.testimonials-grid', start: 'top 85%', toggleActions: 'play none none none' }
+      }
+    );
+
+    /* ─── Section title clip-reveal ─── */
+    document.querySelectorAll('.section-title').forEach(el => {
+      gsap.from(el, {
+        clipPath: 'inset(0 100% 0 0)',
+        duration: 1.1, ease: 'power4.inOut',
+        scrollTrigger: { trigger: el, start: 'top 85%' }
+      });
+    });
+
+    /* ─── Marquee — GSAP seamless loop ─── */
+    (function initMarquee() {
+      const innerA = document.getElementById('marquee-a');
+      const track  = document.getElementById('marquee-track');
+      // Wait one frame so layout is complete and offsetWidth is accurate
+      requestAnimationFrame(() => {
+        const singleWidth = innerA.offsetWidth;
+        let xPos = 0;
+        const speed = 0.6; // px per frame — increase for faster
+
+        function tick() {
+          xPos -= speed;
+          if (xPos <= -singleWidth) xPos += singleWidth;
+          track.style.transform = 'translateX(' + xPos + 'px)';
+          requestAnimationFrame(tick);
+        }
+        tick();
+      });
+    })();
+
+    /* ─── Horizontal line reveal ─── */
+    gsap.from('.scroll-hint', {
+      opacity: 0, y: 10, duration: 1.2, ease: 'power2.out', delay: 1.8
+    });
+
+    /* ─── Feature rows stagger ─── */
+    gsap.from('.feature-row', {
+      opacity: 0, x: -30, stagger: .1,
+      duration: .7, ease: 'power3.out',
+      scrollTrigger: { trigger: '.about-features', start: 'top 85%' }
+    });
+
+    /* ─── Tesla models chips ─── */
+    gsap.from('.model-chip', {
+      opacity: 0, y: 20, stagger: .08,
+      duration: .6, ease: 'power3.out',
+      scrollTrigger: { trigger: '.tesla-models', start: 'top 88%' }
+    });
+
+    /* ─── CTA title split animation ─── */
+    gsap.from('.cta-title', {
+      opacity: 0, y: 60, duration: 1.1, ease: 'power4.out',
+      scrollTrigger: { trigger: '.cta-title', start: 'top 85%' }
+    });
+
+    /* ─── About badge spin on scroll ─── */
+    gsap.to('.about-badge', {
+      rotation: 360, duration: 20, ease: 'none', repeat: -1
+    });
+
+    /* ─── Footer fade ─── */
+    gsap.from('footer', {
+      opacity: 0, duration: .8, ease: 'power2.out',
+      scrollTrigger: { trigger: 'footer', start: 'top 95%' }
+    });
+  </script>
+</body>
+</html>
