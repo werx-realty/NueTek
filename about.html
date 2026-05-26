@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — NeuTEK Customs | Bakersfield, CA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --gold:#3ECFCF; --gold-lt:#6EDDDD; --white:#F5F5F0; --off:#AAAAAA; --bg:#080808; --bg2:#0F0F0F; --bg3:#141414; --border:rgba(62,207,207,.18); }
+    html { scroll-behavior: smooth; }
+    body { background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; overflow-x:hidden; cursor:none; }
+    ::selection { background:var(--gold); color:#000; }
+    body::before { content:''; position:fixed; inset:0; z-index:9990; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity:.025; pointer-events:none; }
+    #cursor-dot { position:fixed; width:8px; height:8px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+    #cursor-ring { position:fixed; width:36px; height:36px; border:1.5px solid rgba(62,207,207,.6); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+    body:has(a:hover) #cursor-dot { width:14px; height:14px; }
+    body:has(a:hover) #cursor-ring { width:56px; height:56px; border-color:var(--gold); }
+    ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:var(--bg); } ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:2px; }
+
+    nav { position:fixed; top:0; left:0; right:0; z-index:900; padding:24px 60px; display:flex; align-items:center; justify-content:space-between; transition:background .4s, padding .4s; }
+    nav.scrolled { background:rgba(8,8,8,.92); backdrop-filter:blur(20px); padding:16px 60px; border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:.12em; color:var(--white); text-decoration:none; }
+    .nav-logo span { color:var(--gold); }
+    .nav-links { display:flex; gap:40px; list-style:none; }
+    .nav-links a { color:var(--off); font-size:.78rem; font-weight:500; text-decoration:none; letter-spacing:.14em; text-transform:uppercase; position:relative; transition:color .3s; }
+    .nav-links a::after { content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--gold); transition:width .3s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { width:100%; }
+    .nav-cta { background:var(--gold); color:#000; padding:11px 28px; font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; text-decoration:none; transition:background .3s; clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px); }
+    .nav-cta:hover { background:var(--gold-lt); }
+
+    .page-hero { position:relative; padding:180px 60px 100px; overflow:hidden; }
+    .page-hero-bg { position:absolute; inset:0; background:radial-gradient(ellipse 60% 80% at 20% 50%, rgba(62,207,207,.06), transparent 70%), var(--bg2); }
+    .page-hero-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(62,207,207,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(62,207,207,.03) 1px,transparent 1px); background-size:80px 80px; mask-image:radial-gradient(ellipse 80% 80% at 20% 50%, black 20%, transparent 100%); }
+    .page-hero-line { position:absolute; right:60px; top:50%; transform:translateY(-50%); font-family:'Bebas Neue',sans-serif; font-size:20vw; color:rgba(62,207,207,.03); pointer-events:none; white-space:nowrap; }
+    .page-hero-content { position:relative; z-index:2; max-width:700px; }
+    .page-tag { display:inline-flex; align-items:center; gap:10px; border:1px solid var(--border); padding:7px 18px; font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:28px; background:rgba(62,207,207,.04); }
+    .page-tag::before { content:''; width:6px; height:6px; background:var(--gold); border-radius:50%; }
+    .page-h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(4rem,10vw,9rem); line-height:.9; letter-spacing:.04em; margin-bottom:24px; }
+    .page-h1 span { color:var(--gold); }
+    .page-sub { font-size:1rem; color:var(--off); line-height:1.8; max-width:520px; }
+
+    section { padding:100px 60px; }
+    .section-label { display:inline-flex; align-items:center; gap:12px; font-size:.68rem; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; }
+    .section-label::before { content:''; display:block; width:28px; height:1px; background:var(--gold); }
+    .section-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2.8rem,6vw,5rem); line-height:.95; letter-spacing:.04em; color:var(--white); }
+    .section-title span { color:var(--gold); }
+    .reveal-up { opacity:0; transform:translateY(40px); }
+    .reveal-left { opacity:0; transform:translateX(-50px); }
+    .reveal-right { opacity:0; transform:translateX(50px); }
+
+    /* STORY SPLIT */
+    #story { background:var(--bg2); display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+    .story-visual { position:relative; }
+    .story-frame { aspect-ratio:4/5; background:var(--bg3); border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; overflow:hidden; position:relative; }
+    .story-frame-inner { width:80%; }
+    .story-badge { position:absolute; bottom:-16px; right:-16px; background:var(--gold); color:#000; width:110px; height:110px; display:flex; flex-direction:column; align-items:center; justify-content:center; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); }
+    .story-badge-num { font-family:'Bebas Neue',sans-serif; font-size:2rem; line-height:1; }
+    .story-badge-text { font-size:.58rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; text-align:center; line-height:1.3; }
+    .story-content p { font-size:.95rem; color:var(--off); line-height:1.85; margin-top:20px; max-width:500px; }
+    .story-content p + p { margin-top:16px; }
+
+    /* VALUES */
+    #values { background:var(--bg); }
+    .values-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:56px; }
+    .value-card { background:var(--bg3); border:1px solid var(--border); padding:40px 32px; transition:border-color .4s, transform .4s; }
+    .value-card:hover { border-color:rgba(62,207,207,.4); transform:translateY(-6px); }
+    .value-icon { width:48px; height:48px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; margin-bottom:24px; transition:border-color .4s,background .4s; }
+    .value-card:hover .value-icon { border-color:var(--gold); background:rgba(62,207,207,.08); }
+    .value-icon svg { width:22px; height:22px; fill:none; stroke:var(--gold); stroke-width:1.5; }
+    .value-title { font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:.06em; color:var(--white); margin-bottom:14px; }
+    .value-desc { font-size:.87rem; color:var(--off); line-height:1.75; }
+
+    /* XPEL */
+    #xpel { background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .xpel-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+    .xpel-text p { font-size:.95rem; color:var(--off); line-height:1.85; margin-top:20px; max-width:480px; }
+    .xpel-badges { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:40px; }
+    .xpel-badge-item { padding:24px; border:1px solid var(--border); transition:border-color .3s,background .3s; }
+    .xpel-badge-item:hover { border-color:var(--gold); background:rgba(62,207,207,.03); }
+    .xbadge-title { font-size:.82rem; font-weight:600; color:var(--white); letter-spacing:.04em; margin-bottom:6px; }
+    .xbadge-desc { font-size:.78rem; color:var(--off); line-height:1.6; }
+    .xpel-visual { display:flex; flex-direction:column; gap:16px; align-items:center; justify-content:center; background:var(--bg3); border:1px solid var(--border); padding:60px 40px; text-align:center; }
+    .xpel-big { font-family:'Bebas Neue',sans-serif; font-size:clamp(3rem,6vw,5rem); color:var(--gold); letter-spacing:.1em; }
+    .xpel-sub-text { font-size:.78rem; letter-spacing:.2em; text-transform:uppercase; color:var(--off); }
+    .xpel-cert { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); padding:10px 20px; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-top:16px; }
+
+    /* STATS */
+    #about-stats { background:var(--bg); padding:80px 60px; }
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+    .stat-cell { padding:44px 32px; border-right:1px solid var(--border); text-align:center; }
+    .stat-cell:last-child { border-right:none; }
+    .stat-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(3rem,5vw,4.5rem); color:var(--gold); line-height:1; margin-bottom:10px; }
+    .stat-label { font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:var(--off); }
+
+    /* CTA */
+    #page-cta { background:var(--bg2); text-align:center; padding:120px 60px; position:relative; overflow:hidden; }
+    .cta-glow { position:absolute; inset:0; background:radial-gradient(ellipse 50% 60% at 50% 50%, rgba(62,207,207,.06), transparent 70%); }
+    .cta-inner { position:relative; z-index:1; }
+    .cta-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(3rem,7vw,6rem); line-height:.92; letter-spacing:.04em; margin-bottom:20px; }
+    .cta-title span { color:var(--gold); }
+    .cta-sub { font-size:1rem; color:var(--off); margin-bottom:48px; max-width:440px; margin-left:auto; margin-right:auto; line-height:1.7; }
+    .cta-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+    .btn-primary { display:inline-flex; align-items:center; gap:10px; background:var(--gold); color:#000; padding:16px 40px; font-size:.82rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; text-decoration:none; transition:all .3s; clip-path:polygon(10px 0%,100% 0%,100% calc(100% - 10px),calc(100% - 10px) 100%,0% 100%,0% 10px); }
+    .btn-primary:hover { background:var(--gold-lt); transform:translateY(-2px); }
+    .btn-ghost { display:inline-flex; align-items:center; gap:10px; border:1px solid var(--border); color:var(--white); padding:15px 40px; font-size:.82rem; font-weight:500; letter-spacing:.14em; text-transform:uppercase; text-decoration:none; transition:all .3s; }
+    .btn-ghost:hover { border-color:var(--gold); color:var(--gold); }
+
+    footer { background:#050505; border-top:1px solid var(--border); padding:40px 60px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+    .footer-logo { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:.12em; color:var(--off); text-decoration:none; }
+    .footer-logo span { color:var(--gold); }
+    .footer-links { display:flex; gap:32px; list-style:none; }
+    .footer-links a { font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(170,170,170,.6); text-decoration:none; transition:color .3s; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-copy { font-size:.72rem; color:rgba(170,170,170,.35); }
+    #progress-bar { position:fixed; top:0; left:0; z-index:9999; height:2px; width:0%; background:linear-gradient(90deg,var(--gold),var(--gold-lt)); }
+
+    @media(max-width:1024px) {
+      .page-hero { padding:140px 32px 80px; } section { padding:80px 32px; } nav { padding:20px 32px; } nav.scrolled { padding:14px 32px; }
+      #story { grid-template-columns:1fr; gap:48px; }
+      .values-grid { grid-template-columns:1fr; }
+      .xpel-inner { grid-template-columns:1fr; gap:48px; }
+      .stats-row { grid-template-columns:repeat(2,1fr); }
+      footer { flex-direction:column; text-align:center; }
+    }
+    @media(max-width:640px) { .nav-links{display:none;} .xpel-badges{grid-template-columns:1fr;} .stat-cell{border-right:none;border-bottom:1px solid var(--border);} }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">NEU<span>TEK</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="tesla.html">Tesla</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+    </ul>
+    <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="nav-cta">Book Now</a>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-grid"></div>
+    <div class="page-hero-line">ABOUT</div>
+    <div class="page-hero-content">
+      <div class="page-tag">Our Story</div>
+      <h1 class="page-h1" id="ph1">BUILT ON<br/><span>PASSION.</span></h1>
+      <p class="page-sub">A family business born from a love of cars and a commitment to excellence. Two brothers. One mission: protect every vehicle like it's our own.</p>
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <section id="story">
+    <div class="story-visual reveal-left">
+      <div class="story-frame">
+        <div class="story-frame-inner">
+          <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;opacity:.45">
+            <path d="M60 200 L75 155 C95 120 140 108 200 108 C260 108 305 120 325 155 L340 200 Z" stroke="rgba(62,207,207,.5)" stroke-width="1.5" fill="rgba(62,207,207,.05)"/>
+            <path d="M130 170 L142 118 L258 118 L270 170" stroke="rgba(62,207,207,.3)" stroke-width="1" fill="rgba(62,207,207,.03)"/>
+            <circle cx="115" cy="215" r="28" stroke="rgba(62,207,207,.5)" stroke-width="1.5" fill="rgba(62,207,207,.05)"/>
+            <circle cx="115" cy="215" r="14" stroke="rgba(62,207,207,.25)" stroke-width="1" fill="none"/>
+            <circle cx="285" cy="215" r="28" stroke="rgba(62,207,207,.5)" stroke-width="1.5" fill="rgba(62,207,207,.05)"/>
+            <circle cx="285" cy="215" r="14" stroke="rgba(62,207,207,.25)" stroke-width="1" fill="none"/>
+            <text x="200" y="175" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="11" fill="rgba(62,207,207,.4)" letter-spacing="3">NEUTEK CUSTOMS</text>
+            <line x1="30" y1="243" x2="370" y2="243" stroke="rgba(62,207,207,.12)" stroke-width="1"/>
+          </svg>
+        </div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:.22em;color:rgba(62,207,207,.35);">BAKERSFIELD, CA</div>
+        <div class="story-badge">
+          <div class="story-badge-num">10+</div>
+          <div class="story-badge-text">Years<br/>Of Care</div>
+        </div>
+      </div>
+    </div>
+    <div class="story-content reveal-right">
+      <div class="section-label">Who We Are</div>
+      <h2 class="section-title">OUR <span>STORY</span></h2>
+      <p>NeuTEK Customs is a family business, founded and operated by two brothers who turned a lifelong passion for vehicles into Bakersfield's most trusted auto protection shop.</p>
+      <p>What started as a shared obsession with keeping cars looking their best has grown into a full-service studio equipped with the industry's finest materials. As an XPEL Authorized Dealer, we bring manufacturer-backed products and precision installation techniques to every single job.</p>
+      <p>Our appointment-only model is intentional — it means your vehicle always gets our complete, undivided focus. No rush jobs. No shortcuts. Just results that speak for themselves.</p>
+      <p>We're proud to serve the Bakersfield community and beyond, and honored to be the preferred tint shop of Tesla of Bakersfield.</p>
+      <div style="margin-top:40px;">
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="btn-primary" style="display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:#000;padding:16px 40px;font-size:.82rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;transition:all .3s;clip-path:polygon(10px 0%,100% 0%,100% calc(100% - 10px),calc(100% - 10px) 100%,0% 100%,0% 10px);">Meet Us In Person →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section id="values">
+    <div style="text-align:center;margin-bottom:0;">
+      <div class="section-label reveal-up" style="justify-content:center">What Drives Us</div>
+      <h2 class="section-title reveal-up">OUR <span>VALUES</span></h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card reveal-up">
+        <div class="value-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        <div class="value-title">Uncompromising Quality</div>
+        <div class="value-desc">We use only the best materials on the market — XPEL products trusted by professionals worldwide. If it doesn't meet our standard, it doesn't leave the shop.</div>
+      </div>
+      <div class="value-card reveal-up" data-delay=".1">
+        <div class="value-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="value-title">Community First</div>
+        <div class="value-desc">We're Bakersfield through and through. Every car we protect belongs to a neighbor, a friend, or a family member. That responsibility shapes how we work.</div>
+      </div>
+      <div class="value-card reveal-up" data-delay=".2">
+        <div class="value-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="value-title">Total Transparency</div>
+        <div class="value-desc">No hidden fees, no upselling, no surprises. We walk you through every option before we start, and we stand behind every result after we finish.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- XPEL CERT -->
+  <section id="xpel">
+    <div class="xpel-inner">
+      <div class="xpel-text reveal-left">
+        <div class="section-label">Certification</div>
+        <h2 class="section-title">XPEL <span>AUTHORIZED</span></h2>
+        <p>Being an XPEL Authorized Dealer isn't just a badge — it means our installers have passed rigorous training, and every product we use comes with XPEL's manufacturer warranty directly to you.</p>
+        <p style="margin-top:16px">XPEL is the global leader in paint protection film and window tint technology, trusted by factory-certified dealers for the world's most prestigious automotive brands.</p>
+        <div class="xpel-badges">
+          <div class="xpel-badge-item">
+            <div class="xbadge-title">Certified Installer</div>
+            <div class="xbadge-desc">Factory-trained technicians on every installation.</div>
+          </div>
+          <div class="xpel-badge-item">
+            <div class="xbadge-title">Manufacturer Warranty</div>
+            <div class="xbadge-desc">Up to 10 years backed directly by XPEL.</div>
+          </div>
+          <div class="xpel-badge-item">
+            <div class="xbadge-title">Premium Materials</div>
+            <div class="xbadge-desc">XPEL PRIME and ULTIMATE PLUS products.</div>
+          </div>
+          <div class="xpel-badge-item">
+            <div class="xbadge-title">Proven Track Record</div>
+            <div class="xbadge-desc">Thousands of vehicles protected in Bakersfield.</div>
+          </div>
+        </div>
+      </div>
+      <div class="xpel-visual reveal-right">
+        <div class="xpel-big">XPEL</div>
+        <div class="xpel-sub-text">Authorized Dealer</div>
+        <div class="xpel-cert">⚡ NeuTEK Customs · Bakersfield, CA</div>
+        <p style="margin-top:24px;font-size:.82rem;color:var(--off);line-height:1.7;max-width:280px;">Proud partner of Tesla of Bakersfield and one of the Central Valley's most recognized XPEL installation studios.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="about-stats">
+    <div class="stats-row">
+      <div class="stat-cell reveal-up"><div class="stat-num" data-count="500">0+</div><div class="stat-label">5-Star Reviews</div></div>
+      <div class="stat-cell reveal-up" data-delay=".1"><div class="stat-num" data-count="3000">0+</div><div class="stat-label">Vehicles Protected</div></div>
+      <div class="stat-cell reveal-up" data-delay=".2"><div class="stat-num" data-count="10">0+</div><div class="stat-label">Years of Expertise</div></div>
+      <div class="stat-cell reveal-up" data-delay=".3"><div class="stat-num" data-count="99">0</div><div class="stat-label">% UV Rejection</div></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="page-cta">
+    <div class="cta-glow"></div>
+    <div class="cta-inner">
+      <div class="section-label reveal-up" style="justify-content:center">Come See Us</div>
+      <h2 class="cta-title reveal-up">VISIT THE<br/><span>SHOP</span></h2>
+      <p class="cta-sub reveal-up">5920 Nathaniel Way, Suite 300 · Bakersfield, CA 93313<br/>Mon–Sun by Appointment Only</p>
+      <div class="cta-btns reveal-up">
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="btn-primary">Book Now <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="tel:6619322642" class="btn-ghost">(661) 932-2642</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="index.html" class="footer-logo">NEU<span>TEK</span> CUSTOMS</a>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="tesla.html">Tesla</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+    </ul>
+    <span class="footer-copy">© 2026 NeuTEK Customs, Inc.</span>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    (function tick(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick);})();
+    window.addEventListener('scroll',()=>{
+      document.getElementById('progress-bar').style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+      document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);
+    });
+    gsap.from('#ph1',{opacity:0,y:60,duration:1,ease:'power4.out',delay:.3});
+    gsap.from('.page-tag',{opacity:0,y:20,duration:.8,ease:'power3.out',delay:.15});
+    gsap.from('.page-sub',{opacity:0,y:24,duration:.8,ease:'power3.out',delay:.5});
+    document.querySelectorAll('.reveal-up').forEach(el=>{
+      gsap.to(el,{opacity:1,y:0,duration:.9,ease:'power3.out',delay:parseFloat(el.dataset.delay||0),
+        scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}});
+    });
+    document.querySelectorAll('.reveal-left').forEach(el=>{
+      gsap.to(el,{opacity:1,x:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 85%',toggleActions:'play none none none'}});
+    });
+    document.querySelectorAll('.reveal-right').forEach(el=>{
+      gsap.to(el,{opacity:1,x:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 85%',toggleActions:'play none none none'}});
+    });
+    document.querySelectorAll('.section-title').forEach(el=>{
+      gsap.from(el,{clipPath:'inset(0 100% 0 0)',duration:1.1,ease:'power4.inOut',scrollTrigger:{trigger:el,start:'top 85%'}});
+    });
+    document.querySelectorAll('.stat-num[data-count]').forEach(el=>{
+      const target=parseInt(el.dataset.count);
+      const suffix=target>=3000?'+':target>=99?'%':'+';
+      ScrollTrigger.create({trigger:el,start:'top 85%',onEnter:()=>{
+        gsap.to({val:0},{val:target,duration:2.4,ease:'power2.out',
+          onUpdate:function(){el.textContent=Math.round(this.targets()[0].val).toLocaleString()+suffix;}});
+      },once:true});
+    });
+    gsap.to('.story-badge',{rotation:360,duration:20,ease:'none',repeat:-1});
+  </script>
+</body>
+</html>

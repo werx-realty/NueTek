@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reviews — NeuTEK Customs | Bakersfield, CA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root { --gold:#3ECFCF; --gold-lt:#6EDDDD; --white:#F5F5F0; --off:#AAAAAA; --bg:#080808; --bg2:#0F0F0F; --bg3:#141414; --border:rgba(62,207,207,.18); }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; overflow-x:hidden; cursor:none; }
+    ::selection { background:var(--gold); color:#000; }
+    body::before { content:''; position:fixed; inset:0; z-index:9990; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity:.025; pointer-events:none; }
+    #cursor-dot { position:fixed; width:8px; height:8px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+    #cursor-ring { position:fixed; width:36px; height:36px; border:1.5px solid rgba(62,207,207,.6); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+    body:has(a:hover) #cursor-dot { width:14px; height:14px; }
+    body:has(a:hover) #cursor-ring { width:56px; height:56px; border-color:var(--gold); }
+    ::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
+
+    nav { position:fixed; top:0; left:0; right:0; z-index:900; padding:24px 60px; display:flex; align-items:center; justify-content:space-between; transition:background .4s,padding .4s; }
+    nav.scrolled { background:rgba(8,8,8,.92); backdrop-filter:blur(20px); padding:16px 60px; border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:.12em; color:var(--white); text-decoration:none; }
+    .nav-logo span { color:var(--gold); }
+    .nav-links { display:flex; gap:40px; list-style:none; }
+    .nav-links a { color:var(--off); font-size:.78rem; font-weight:500; text-decoration:none; letter-spacing:.14em; text-transform:uppercase; position:relative; transition:color .3s; }
+    .nav-links a::after { content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--gold); transition:width .3s; }
+    .nav-links a:hover,.nav-links a.active { color:var(--white); }
+    .nav-links a:hover::after,.nav-links a.active::after { width:100%; }
+    .nav-cta { background:var(--gold); color:#000; padding:11px 28px; font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; text-decoration:none; transition:background .3s; clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px); }
+    .nav-cta:hover { background:var(--gold-lt); }
+
+    /* HERO */
+    .page-hero { position:relative; padding:180px 60px 100px; overflow:hidden; }
+    .page-hero-bg { position:absolute; inset:0; background:radial-gradient(ellipse 70% 80% at 50% 40%, rgba(62,207,207,.06), transparent 70%), var(--bg2); }
+    .page-hero-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(62,207,207,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(62,207,207,.03) 1px,transparent 1px); background-size:80px 80px; mask-image:radial-gradient(ellipse 70% 70% at 50% 40%, black 20%, transparent 100%); }
+    .page-hero-content { position:relative; z-index:2; text-align:center; max-width:800px; margin:0 auto; }
+    .page-tag { display:inline-flex; align-items:center; gap:10px; border:1px solid var(--border); padding:7px 18px; font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:28px; background:rgba(62,207,207,.04); }
+    .page-tag::before { content:''; width:6px; height:6px; background:var(--gold); border-radius:50%; animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.4;transform:scale(.7);} }
+    .page-h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(4rem,10vw,9rem); line-height:.9; letter-spacing:.04em; margin-bottom:24px; }
+    .page-h1 span { color:var(--gold); }
+    .page-sub { font-size:1rem; color:var(--off); line-height:1.8; max-width:520px; margin:0 auto; }
+
+    /* RATING BANNER */
+    #rating-banner { background:var(--bg); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:56px 60px; }
+    .rating-inner { display:flex; align-items:center; justify-content:center; gap:80px; flex-wrap:wrap; }
+    .rating-score { text-align:center; }
+    .rating-num { font-family:'Bebas Neue',sans-serif; font-size:6rem; color:var(--gold); line-height:1; }
+    .rating-stars { display:flex; gap:4px; justify-content:center; margin:8px 0; font-size:1.4rem; }
+    .rating-count { font-size:.78rem; letter-spacing:.18em; text-transform:uppercase; color:var(--off); }
+    .rating-divider { width:1px; height:80px; background:var(--border); }
+    .rating-source { text-align:center; }
+    .rating-platform { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:.1em; color:var(--white); }
+    .rating-platform-sub { font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--off); margin-top:4px; }
+    .rating-badge { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); padding:8px 18px; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); margin-top:12px; }
+
+    /* ── SCROLLING COLUMNS SECTION ── */
+    #reviews-scroll { background:var(--bg2); padding:100px 0; position:relative; overflow:hidden; }
+    .scroll-header { text-align:center; padding:0 60px; margin-bottom:64px; }
+    .section-label { display:inline-flex; align-items:center; gap:12px; font-size:.68rem; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; }
+    .section-label::before { content:''; display:block; width:28px; height:1px; background:var(--gold); }
+    .section-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2.8rem,6vw,5rem); line-height:.95; letter-spacing:.04em; color:var(--white); }
+    .section-title span { color:var(--gold); }
+
+    /* columns wrapper with fade mask */
+    .columns-wrapper {
+      display:flex; gap:24px; justify-content:center;
+      max-height:780px; overflow:hidden;
+      -webkit-mask-image:linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+      mask-image:linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+      padding:0 60px;
+    }
+
+    /* each column */
+    .testi-col { display:flex; flex-direction:column; gap:20px; flex:1; max-width:340px; min-width:0; }
+    .testi-col-inner { display:flex; flex-direction:column; gap:20px; }
+
+    /* scroll animations */
+    .col-1 .testi-col-inner { animation: scrollUp 18s linear infinite; }
+    .col-2 .testi-col-inner { animation: scrollUp 22s linear infinite; }
+    .col-3 .testi-col-inner { animation: scrollUp 20s linear infinite; }
+
+    @keyframes scrollUp {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+
+    /* pause on hover */
+    .testi-col:hover .testi-col-inner { animation-play-state: paused; }
+
+    /* review card */
+    .testi-card {
+      background:var(--bg3);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:28px 28px 24px;
+      transition:border-color .35s, transform .35s, box-shadow .35s;
+      position:relative; overflow:hidden;
+    }
+    .testi-card:hover {
+      border-color:rgba(62,207,207,.4);
+      transform:translateY(-4px);
+      box-shadow:0 16px 40px rgba(62,207,207,.07);
+    }
+    .testi-card::before {
+      content:'"';
+      position:absolute; top:-8px; right:18px;
+      font-family:'Playfair Display',serif; font-size:5rem;
+      color:rgba(62,207,207,.06); line-height:1; pointer-events:none;
+    }
+    .tc-stars { font-size:.85rem; margin-bottom:14px; letter-spacing:2px; }
+    .tc-text { font-size:.86rem; color:#ccc; line-height:1.8; font-style:italic; margin-bottom:20px; }
+    .tc-author { display:flex; align-items:center; gap:12px; }
+    .tc-avatar {
+      width:42px; height:42px; border-radius:50%;
+      overflow:hidden; flex-shrink:0;
+      border:2px solid rgba(62,207,207,.25);
+    }
+    .tc-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+    .tc-name { font-weight:600; font-size:.85rem; color:var(--white); line-height:1.2; }
+    .tc-meta { font-size:.7rem; color:var(--gold); margin-top:3px; letter-spacing:.04em; }
+
+    /* hide col 2 and 3 on smaller screens */
+    @media(max-width:900px) { .col-2,.col-3 { display:none; } .columns-wrapper { padding:0 24px; } }
+    @media(max-width:600px) { .col-1 { max-width:100%; } }
+
+    /* CTA */
+    #page-cta { background:var(--bg); text-align:center; padding:120px 60px; position:relative; overflow:hidden; }
+    .cta-glow { position:absolute; inset:0; background:radial-gradient(ellipse 50% 60% at 50% 50%, rgba(62,207,207,.07), transparent 70%); }
+    .cta-inner { position:relative; z-index:1; }
+    .cta-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(3rem,7vw,6rem); line-height:.92; letter-spacing:.04em; margin-bottom:20px; }
+    .cta-title span { color:var(--gold); }
+    .cta-sub { font-size:1rem; color:var(--off); margin-bottom:48px; max-width:440px; margin-left:auto; margin-right:auto; line-height:1.7; }
+    .cta-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+    .btn-primary { display:inline-flex; align-items:center; gap:10px; background:var(--gold); color:#000; padding:16px 40px; font-size:.82rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; text-decoration:none; transition:all .3s; clip-path:polygon(10px 0%,100% 0%,100% calc(100% - 10px),calc(100% - 10px) 100%,0% 100%,0% 10px); }
+    .btn-primary:hover { background:var(--gold-lt); transform:translateY(-2px); }
+    .btn-ghost { display:inline-flex; align-items:center; gap:10px; border:1px solid var(--border); color:var(--white); padding:15px 40px; font-size:.82rem; font-weight:500; letter-spacing:.14em; text-transform:uppercase; text-decoration:none; transition:all .3s; }
+    .btn-ghost:hover { border-color:var(--gold); color:var(--gold); }
+
+    .reveal-up { opacity:0; transform:translateY(40px); }
+    footer { background:#050505; border-top:1px solid var(--border); padding:40px 60px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+    .footer-logo { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:.12em; color:var(--off); text-decoration:none; }
+    .footer-logo span { color:var(--gold); }
+    .footer-links { display:flex; gap:32px; list-style:none; }
+    .footer-links a { font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(170,170,170,.6); text-decoration:none; transition:color .3s; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-copy { font-size:.72rem; color:rgba(170,170,170,.35); }
+    #progress-bar { position:fixed; top:0; left:0; z-index:9999; height:2px; width:0%; background:linear-gradient(90deg,var(--gold),var(--gold-lt)); }
+
+    @media(max-width:1024px) {
+      .page-hero{padding:140px 32px 80px;} #rating-banner{padding:48px 32px;} #page-cta{padding:100px 32px;}
+      nav{padding:20px 32px;} nav.scrolled{padding:14px 32px;}
+      .rating-divider{display:none;} .rating-inner{gap:40px;}
+      footer{flex-direction:column;text-align:center;}
+    }
+    @media(max-width:640px) { .nav-links{display:none;} }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">NEU<span>TEK</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="tesla.html">Tesla</a></li>
+      <li><a href="reviews.html" class="active">Reviews</a></li>
+    </ul>
+    <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="nav-cta">Book Now</a>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-grid"></div>
+    <div class="page-hero-content">
+      <div class="page-tag">Google Reviews</div>
+      <h1 class="page-h1" id="ph1">WHAT<br/><span>PEOPLE SAY</span></h1>
+      <p class="page-sub">Don't take our word for it. Here's what Bakersfield drivers say about their NeuTEK Customs experience.</p>
+    </div>
+  </div>
+
+  <!-- RATING BANNER -->
+  <div id="rating-banner">
+    <div class="rating-inner">
+      <div class="rating-score reveal-up">
+        <div class="rating-num">5.0</div>
+        <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+        <div class="rating-count">500+ Reviews</div>
+      </div>
+      <div class="rating-divider reveal-up"></div>
+      <div class="rating-source reveal-up">
+        <div class="rating-platform">Google</div>
+        <div class="rating-platform-sub">Verified Customer Reviews</div>
+        <div class="rating-badge">★ Top Rated — Bakersfield, CA</div>
+      </div>
+      <div class="rating-divider reveal-up"></div>
+      <div class="rating-source reveal-up">
+        <div class="rating-platform" style="font-size:1.4rem;color:var(--gold);">"Caring, Skilled,<br/>Meticulous."</div>
+        <div class="rating-platform-sub" style="margin-top:8px;">The verdict from our customers</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCROLLING TESTIMONIALS -->
+  <section id="reviews-scroll">
+    <div class="scroll-header reveal-up">
+      <div class="section-label" style="justify-content:center">Customer Reviews</div>
+      <h2 class="section-title">REAL PEOPLE. <span>REAL RESULTS.</span></h2>
+    </div>
+
+    <div class="columns-wrapper">
+
+      <!-- COLUMN 1 -->
+      <div class="testi-col col-1">
+        <div class="testi-col-inner">
+          <!-- real cards -->
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Huge shoutout to NeuTEK Customs for the amazing tint job they did on my vehicle. The quality of the work is top-notch, clean, precise, and looks absolutely perfect. You can tell they take pride in every install."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5UVDwvdGV4dD48L3N2Zz4=" alt="Tyler T." /></div>
+              <div><div class="tc-name">Tyler T.</div><div class="tc-meta">★ Google Review · Window Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"They did an excellent service on my window tint for my 2025 Honda Civic. Very nice and knowledgeable — my mom loved it so much she went and got her car done too. Highly recommend."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5BQzwvdGV4dD48L3N2Zz4=" alt="Alyssa C." /></div>
+              <div><div class="tc-name">Alyssa C.</div><div class="tc-meta">★ Google Review · Window Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"NeuTEK Customs is a family business operated by two brothers who decided to share their skills with the community. Get a free quote or better yet, go visit — genuinely great people doing genuinely great work."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5BQzwvdGV4dD48L3N2Zz4=" alt="Alvin C." /></div>
+              <div><div class="tc-name">Alvin C.</div><div class="tc-meta">★ Google Review · PPF</div></div>
+            </div>
+          </div>
+          <!-- duplicate for seamless loop -->
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Huge shoutout to NeuTEK Customs for the amazing tint job they did on my vehicle. The quality of the work is top-notch, clean, precise, and looks absolutely perfect. You can tell they take pride in every install."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5UVDwvdGV4dD48L3N2Zz4=" alt="Tyler T." /></div>
+              <div><div class="tc-name">Tyler T.</div><div class="tc-meta">★ Google Review · Window Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"They did an excellent service on my window tint for my 2025 Honda Civic. Very nice and knowledgeable — my mom loved it so much she went and got her car done too. Highly recommend."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5BQzwvdGV4dD48L3N2Zz4=" alt="Alyssa C." /></div>
+              <div><div class="tc-name">Alyssa C.</div><div class="tc-meta">★ Google Review · Window Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"NeuTEK Customs is a family business operated by two brothers who decided to share their skills with the community. Get a free quote or better yet, go visit — genuinely great people doing genuinely great work."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5BQzwvdGV4dD48L3N2Zz4=" alt="Alvin C." /></div>
+              <div><div class="tc-name">Alvin C.</div><div class="tc-meta">★ Google Review · PPF</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 2 -->
+      <div class="testi-col col-2">
+        <div class="testi-col-inner">
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"They did a phenomenal job on my wife's new 2025 Acura MDX. We went ahead and did 5% for the doors, panoramic sunroof, and rear window. Front windshield at 15%. Looks incredible — zero bubbles, perfect cut."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5WQzwvdGV4dD48L3N2Zz4=" alt="Vicente C." /></div>
+              <div><div class="tc-name">Vicente C.</div><div class="tc-meta">★ Google Review · Ceramic Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"NeuTEK Customs has great customer service. They made sure I was happy with the final result before I left. A great company that truly cares about their customers — not just the work."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5NQTwvdGV4dD48L3N2Zz4=" alt="Marisol A." /></div>
+              <div><div class="tc-name">Marisol A.</div><div class="tc-meta">★ Google Review · Window Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Had my Tesla Model 3 done here and I couldn't be happier. They know exactly what they're doing with EVs. The tint came out perfectly clean — zero bubbles, autopilot cameras untouched."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5KVDwvdGV4dD48L3N2Zz4=" alt="Jason T." /></div>
+              <div><div class="tc-name">Jason T.</div><div class="tc-meta">★ Google Review · Tesla Tint</div></div>
+            </div>
+          </div>
+          <!-- duplicates -->
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"They did a phenomenal job on my wife's new 2025 Acura MDX. We went ahead and did 5% for the doors, panoramic sunroof, and rear window. Front windshield at 15%. Looks incredible — zero bubbles, perfect cut."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5WQzwvdGV4dD48L3N2Zz4=" alt="Vicente C." /></div>
+              <div><div class="tc-name">Vicente C.</div><div class="tc-meta">★ Google Review · Ceramic Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"NeuTEK Customs has great customer service. They made sure I was happy with the final result before I left. A great company that truly cares about their customers — not just the work."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5NQTwvdGV4dD48L3N2Zz4=" alt="Marisol A." /></div>
+              <div><div class="tc-name">Marisol A.</div><div class="tc-meta">★ Google Review · Window Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Had my Tesla Model 3 done here and I couldn't be happier. They know exactly what they're doing with EVs. The tint came out perfectly clean — zero bubbles, autopilot cameras untouched."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5KVDwvdGV4dD48L3N2Zz4=" alt="Jason T." /></div>
+              <div><div class="tc-name">Jason T.</div><div class="tc-meta">★ Google Review · Tesla Tint</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMN 3 -->
+      <div class="testi-col col-3">
+        <div class="testi-col-inner">
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Was looking for high-quality window tinting for my new Toyota Corolla Cross Hybrid. NeuTEK had exactly the brand I wanted. Appointment-only means they give you their full, undivided attention. Worth every penny."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5TQjwvdGV4dD48L3N2Zz4=" alt="Susan B." /></div>
+              <div><div class="tc-name">Susan B.</div><div class="tc-meta">★ Google Review · Window Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Really great service and caring employees. Very comfortable waiting area with free water and snacks. 100% would recommend if you want the job done right and done with care!"</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5BTjwvdGV4dD48L3N2Zz4=" alt="Aby N." /></div>
+              <div><div class="tc-name">Aby N.</div><div class="tc-meta">★ Google Review · Ceramic Coating</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Brought in my wife's Model Y and they knocked it out of the park. Panoramic roof tint looks amazing, the car runs so much cooler now, and they finished ahead of schedule. Truly the best in Bakersfield."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5LTDwvdGV4dD48L3N2Zz4=" alt="Kevin L." /></div>
+              <div><div class="tc-name">Kevin L.</div><div class="tc-meta">★ Google Review · Tesla Model Y</div></div>
+            </div>
+          </div>
+          <!-- duplicates -->
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Was looking for high-quality window tinting for my new Toyota Corolla Cross Hybrid. NeuTEK had exactly the brand I wanted. Appointment-only means they give you their full, undivided attention. Worth every penny."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5TQjwvdGV4dD48L3N2Zz4=" alt="Susan B." /></div>
+              <div><div class="tc-name">Susan B.</div><div class="tc-meta">★ Google Review · Window Tint</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Really great service and caring employees. Very comfortable waiting area with free water and snacks. 100% would recommend if you want the job done right and done with care!"</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5BTjwvdGV4dD48L3N2Zz4=" alt="Aby N." /></div>
+              <div><div class="tc-name">Aby N.</div><div class="tc-meta">★ Google Review · Ceramic Coating</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="tc-stars">⭐⭐⭐⭐⭐</div>
+            <div class="tc-text">"Brought in my wife's Model Y and they knocked it out of the park. Panoramic roof tint looks amazing, the car runs so much cooler now, and they finished ahead of schedule. Truly the best in Bakersfield."</div>
+            <div class="tc-author">
+              <div class="tc-avatar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgdmlld0JveD0iMCAwIDQyIDQyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjM0VDRkNGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWE5OTk5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMSIgeT0iMjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE1IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMDAwMDAwIj5LTDwvdGV4dD48L3N2Zz4=" alt="Kevin L." /></div>
+              <div><div class="tc-name">Kevin L.</div><div class="tc-meta">★ Google Review · Tesla Model Y</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="page-cta">
+    <div class="cta-glow"></div>
+    <div class="cta-inner">
+      <div class="section-label reveal-up" style="justify-content:center">Join The Family</div>
+      <h2 class="cta-title reveal-up">BECOME OUR<br/><span>NEXT REVIEW</span></h2>
+      <p class="cta-sub reveal-up">Experience the quality everyone is talking about. Book your appointment today and see why NeuTEK Customs is Bakersfield's most trusted auto protection shop.</p>
+      <div class="cta-btns reveal-up">
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="btn-primary">Book Now
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="tel:6619322642" class="btn-ghost">(661) 932-2642</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="index.html" class="footer-logo">NEU<span>TEK</span> CUSTOMS</a>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="tesla.html">Tesla</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+    </ul>
+    <span class="footer-copy">© 2026 NeuTEK Customs, Inc.</span>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+    (function tick(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick);})();
+    window.addEventListener('scroll',()=>{
+      document.getElementById('progress-bar').style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+      document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);
+    });
+    gsap.from('#ph1',{opacity:0,y:60,duration:1,ease:'power4.out',delay:.3});
+    gsap.from('.page-tag',{opacity:0,y:20,duration:.8,ease:'power3.out',delay:.15});
+    gsap.from('.page-sub',{opacity:0,y:24,duration:.8,ease:'power3.out',delay:.5});
+    document.querySelectorAll('.reveal-up').forEach(el=>{
+      gsap.to(el,{opacity:1,y:0,duration:.9,ease:'power3.out',
+        scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}});
+    });
+    // fade in columns wrapper
+    gsap.from('.columns-wrapper',{opacity:0,y:40,duration:1,ease:'power3.out',scrollTrigger:{trigger:'.columns-wrapper',start:'top 85%'}});
+  </script>
+</body>
+</html>

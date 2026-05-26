@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — NeuTEK Customs | Bakersfield, CA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:   #3ECFCF; --gold-lt: #6EDDDD;
+      --white:  #F5F5F0; --off:     #AAAAAA;
+      --bg:     #080808; --bg2:     #0F0F0F;
+      --bg3:    #141414; --border:  rgba(62,207,207,.18);
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: none; }
+    ::selection { background: var(--gold); color: #000; }
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 9990;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: .025; pointer-events: none;
+    }
+    #cursor-dot { position: fixed; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .15s, height .15s; }
+    #cursor-ring { position: fixed; width: 36px; height: 36px; border: 1.5px solid rgba(62,207,207,.6); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); }
+    body:has(a:hover) #cursor-dot, body:has(button:hover) #cursor-dot { width: 14px; height: 14px; }
+    body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring { width: 56px; height: 56px; border-color: var(--gold); }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 900; padding: 24px 60px; display: flex; align-items: center; justify-content: space-between; transition: background .4s, padding .4s; }
+    nav.scrolled { background: rgba(8,8,8,.92); backdrop-filter: blur(20px); padding: 16px 60px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: .12em; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a { color: var(--off); font-size: .78rem; font-weight: 500; text-decoration: none; letter-spacing: .14em; text-transform: uppercase; position: relative; transition: color .3s; }
+    .nav-links a::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 0; height: 1px; background: var(--gold); transition: width .3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-cta { background: var(--gold); color: #000; padding: 11px 28px; font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; transition: background .3s; clip-path: polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px); }
+    .nav-cta:hover { background: var(--gold-lt); }
+
+    /* PAGE HERO */
+    .page-hero { position: relative; padding: 180px 60px 100px; overflow: hidden; }
+    .page-hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 20% 50%, rgba(62,207,207,.06), transparent 70%), var(--bg2); }
+    .page-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(62,207,207,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(62,207,207,.03) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 80% 80% at 20% 50%, black 20%, transparent 100%); }
+    .page-hero-content { position: relative; z-index: 2; max-width: 700px; }
+    .page-tag { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--border); padding: 7px 18px; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 28px; background: rgba(62,207,207,.04); }
+    .page-tag::before { content: ''; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+    .page-h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem, 10vw, 9rem); line-height: .9; letter-spacing: .04em; margin-bottom: 24px; }
+    .page-h1 span { color: var(--gold); }
+    .page-sub { font-size: 1rem; color: var(--off); line-height: 1.8; max-width: 520px; }
+    .page-hero-line { position: absolute; right: 60px; top: 50%; transform: translateY(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 20vw; color: rgba(62,207,207,.03); letter-spacing: .04em; pointer-events: none; white-space: nowrap; }
+
+    /* COMMON */
+    section { padding: 100px 60px; }
+    .section-label { display: inline-flex; align-items: center; gap: 12px; font-size: .68rem; letter-spacing: .28em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+    .section-label::before { content: ''; display: block; width: 28px; height: 1px; background: var(--gold); }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.8rem, 6vw, 5rem); line-height: .95; letter-spacing: .04em; color: var(--white); }
+    .section-title span { color: var(--gold); }
+    .section-body { font-size: .95rem; color: var(--off); line-height: 1.8; }
+    .reveal-up { opacity: 0; transform: translateY(40px); }
+
+    /* SERVICE DEEP CARDS */
+    .service-deep { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 64px; }
+    .service-deep-card { background: var(--bg3); border: 1px solid transparent; padding: 56px 48px; position: relative; overflow: hidden; transition: border-color .4s; }
+    .service-deep-card:hover { border-color: var(--border); }
+    .service-deep-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(62,207,207,.05), transparent 55%); opacity: 0; transition: opacity .4s; }
+    .service-deep-card:hover::before { opacity: 1; }
+    .sdc-num { font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: rgba(62,207,207,.05); position: absolute; top: 16px; right: 28px; line-height: 1; }
+    .sdc-icon { width: 56px; height: 56px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 28px; transition: border-color .4s, background .4s; }
+    .service-deep-card:hover .sdc-icon { border-color: var(--gold); background: rgba(62,207,207,.08); }
+    .sdc-icon svg { width: 24px; height: 24px; fill: none; stroke: var(--gold); stroke-width: 1.5; }
+    .sdc-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: .06em; color: var(--white); margin-bottom: 16px; transition: color .3s; }
+    .service-deep-card:hover .sdc-title { color: var(--gold-lt); }
+    .sdc-desc { font-size: .88rem; color: var(--off); line-height: 1.8; margin-bottom: 32px; }
+    .sdc-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
+    .sdc-feature { display: flex; align-items: center; gap: 12px; font-size: .82rem; color: #ccc; }
+    .sdc-feature::before { content: ''; width: 5px; height: 5px; background: var(--gold); border-radius: 50%; flex-shrink: 0; }
+    .sdc-cta { display: inline-flex; align-items: center; gap: 8px; font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); text-decoration: none; transition: gap .3s; }
+    .sdc-cta:hover { gap: 14px; }
+    .sdc-cta::after { content: '→'; }
+
+    /* FULL WIDTH CARD */
+    .service-full { background: var(--bg3); border: 1px solid var(--border); padding: 56px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-top: 2px; }
+    .service-full-left .sdc-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: .06em; color: var(--white); margin-bottom: 16px; }
+    .service-full-left .sdc-desc { font-size: .88rem; color: var(--off); line-height: 1.8; margin-bottom: 24px; }
+    .service-full-right { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .benefit-item { padding: 20px; border: 1px solid var(--border); transition: border-color .3s; }
+    .benefit-item:hover { border-color: var(--gold); }
+    .benefit-title { font-size: .82rem; font-weight: 600; color: var(--white); margin-bottom: 6px; letter-spacing: .04em; }
+    .benefit-desc { font-size: .78rem; color: var(--off); line-height: 1.6; }
+
+    /* PACKAGES */
+    #packages { background: var(--bg); border-top: 1px solid var(--border); }
+    .packages-header { text-align: center; margin-bottom: 64px; }
+    .packages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pkg-card { background: var(--bg3); border: 1px solid var(--border); padding: 44px 36px; position: relative; transition: border-color .4s, transform .4s; }
+    .pkg-card:hover { border-color: rgba(62,207,207,.4); transform: translateY(-8px); }
+    .pkg-card.featured { border-color: var(--gold); }
+    .pkg-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gold); color: #000; font-size: .65rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; padding: 5px 16px; white-space: nowrap; }
+    .pkg-tier { font-size: .7rem; letter-spacing: .24em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .pkg-name { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: .06em; color: var(--white); margin-bottom: 20px; }
+    .pkg-divider { width: 40px; height: 1px; background: var(--border); margin-bottom: 28px; }
+    .pkg-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+    .pkg-features li { display: flex; align-items: center; gap: 10px; font-size: .85rem; color: #ccc; }
+    .pkg-features li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+    .pkg-cta { display: block; text-align: center; background: transparent; border: 1px solid var(--border); color: var(--white); padding: 14px; font-size: .78rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; transition: all .3s; }
+    .pkg-cta:hover, .pkg-card.featured .pkg-cta { background: var(--gold); border-color: var(--gold); color: #000; }
+
+    /* CTA */
+    #page-cta { background: var(--bg2); text-align: center; padding: 120px 60px; position: relative; overflow: hidden; }
+    .cta-glow { position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(62,207,207,.06), transparent 70%); }
+    .cta-inner { position: relative; z-index: 1; }
+    .cta-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 7vw, 6rem); line-height: .92; letter-spacing: .04em; margin-bottom: 20px; }
+    .cta-title span { color: var(--gold); }
+    .cta-sub { font-size: 1rem; color: var(--off); margin-bottom: 48px; max-width: 440px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--gold); color: #000; padding: 16px 40px; font-size: .82rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; text-decoration: none; transition: all .3s; clip-path: polygon(10px 0%,100% 0%,100% calc(100% - 10px),calc(100% - 10px) 100%,0% 100%,0% 10px); }
+    .btn-primary:hover { background: var(--gold-lt); transform: translateY(-2px); }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--border); color: var(--white); padding: 15px 40px; font-size: .82rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; transition: all .3s; }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* FOOTER */
+    footer { background: #050505; border-top: 1px solid var(--border); padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: .12em; color: var(--off); text-decoration: none; }
+    .footer-logo span { color: var(--gold); }
+    .footer-links { display: flex; gap: 32px; list-style: none; }
+    .footer-links a { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(170,170,170,.6); text-decoration: none; transition: color .3s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { font-size: .72rem; color: rgba(170,170,170,.35); }
+    #progress-bar { position: fixed; top: 0; left: 0; z-index: 9999; height: 2px; width: 0%; background: linear-gradient(90deg, var(--gold), var(--gold-lt)); }
+
+    @media (max-width: 1024px) {
+      .page-hero { padding: 140px 32px 80px; }
+      section { padding: 80px 32px; }
+      nav { padding: 20px 32px; } nav.scrolled { padding: 14px 32px; }
+      .service-deep { grid-template-columns: 1fr; }
+      .service-full { grid-template-columns: 1fr; gap: 40px; }
+      .packages-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 640px) { .nav-links { display: none; } .service-full-right { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div id="progress-bar"></div>
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">NEU<span>TEK</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html" class="active">Services</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="tesla.html">Tesla</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+    </ul>
+    <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="nav-cta">Book Now</a>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-grid"></div>
+    <div class="page-hero-line">SERVICES</div>
+    <div class="page-hero-content">
+      <div class="page-tag">NeuTEK Customs</div>
+      <h1 class="page-h1" id="ph1">WHAT<br/><span>WE OFFER</span></h1>
+      <p class="page-sub">Premium protection and enhancement services for every vehicle. We use only industry-leading XPEL products installed by certified technicians.</p>
+    </div>
+  </div>
+
+  <!-- SERVICES DEEP DIVE -->
+  <section id="services-detail" style="background:var(--bg2); padding-top:0;">
+    <div class="service-deep">
+
+      <!-- Window Tint -->
+      <div class="service-deep-card reveal-up">
+        <div class="sdc-num">01</div>
+        <div class="sdc-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 6V4M17 6V4"/></svg>
+        </div>
+        <div class="sdc-title">Ceramic Window Tint</div>
+        <div class="sdc-desc">Advanced ceramic film technology that blocks UV rays and reduces heat — without interfering with signals or electronics. Available in multiple VLT shades for cars, trucks, and SUVs.</div>
+        <div class="sdc-features">
+          <div class="sdc-feature">Blocks up to 99% of UV rays</div>
+          <div class="sdc-feature">Reduces interior heat by up to 60%</div>
+          <div class="sdc-feature">Color-stable, non-metallic construction</div>
+          <div class="sdc-feature">Signal-friendly — no GPS or cellular interference</div>
+          <div class="sdc-feature">Multiple shade options (5%, 20%, 35%, 50%)</div>
+          <div class="sdc-feature">XPEL PRIME series available</div>
+        </div>
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="sdc-cta">Book Window Tint</a>
+      </div>
+
+      <!-- PPF -->
+      <div class="service-deep-card reveal-up" data-delay=".12">
+        <div class="sdc-num">02</div>
+        <div class="sdc-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7L12 2z"/><path d="M12 22V12M3 7l9 5 9-5"/></svg>
+        </div>
+        <div class="sdc-title">Paint Protection Film</div>
+        <div class="sdc-desc">Self-healing, optically clear XPEL PPF creates an invisible armor over your paint — stopping rock chips, road debris, bug splatter, and everyday wear before it ever reaches the factory finish.</div>
+        <div class="sdc-features">
+          <div class="sdc-feature">Self-healing top coat eliminates light scratches</div>
+          <div class="sdc-feature">Virtually invisible — preserves OEM look</div>
+          <div class="sdc-feature">Hydrophobic surface repels water & dirt</div>
+          <div class="sdc-feature">Full-front, partial, or full-body coverage</div>
+          <div class="sdc-feature">Custom computer-cut patterns for your exact vehicle</div>
+          <div class="sdc-feature">10-year XPEL manufacturer warranty available</div>
+        </div>
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="sdc-cta">Book PPF</a>
+      </div>
+
+    </div>
+
+    <!-- Ceramic Coating — full width -->
+    <div class="service-full reveal-up">
+      <div class="service-full-left">
+        <div class="sdc-num" style="position:relative;top:auto;right:auto;font-size:4rem;color:rgba(62,207,207,.08);margin-bottom:8px;">03</div>
+        <div class="sdc-icon" style="width:56px;height:56px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 6.36 15.36"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="sdc-title" style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.06em;color:var(--white);margin-bottom:16px;">Ceramic Coating</div>
+        <div class="sdc-desc" style="font-size:.88rem;color:var(--off);line-height:1.8;margin-bottom:24px;">A nano-ceramic layer that chemically bonds to your paint — creating years of hydrophobic protection, unrivaled gloss, and a surface that shrugs off contamination.</div>
+        <div class="sdc-features" style="margin-bottom:32px;">
+          <div class="sdc-feature">9H hardness — harder than factory clear coat</div>
+          <div class="sdc-feature">Deep, mirror-like gloss enhancement</div>
+          <div class="sdc-feature">Extreme hydrophobic water-beading</div>
+          <div class="sdc-feature">UV and oxidation protection</div>
+        </div>
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="sdc-cta">Book Ceramic Coating</a>
+      </div>
+      <div class="service-full-right">
+        <div class="benefit-item">
+          <div class="benefit-title">Chemical Resistance</div>
+          <div class="benefit-desc">Repels bird droppings, tree sap, road tar and harsh chemicals before they etch the paint.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">Scratch Resistance</div>
+          <div class="benefit-desc">9H-rated hardness adds a tough layer that resists fine swirls and light marring.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">Easy Maintenance</div>
+          <div class="benefit-desc">Water and dirt sheet off the slick surface — washing takes minutes instead of hours.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">Long-Term Value</div>
+          <div class="benefit-desc">Protect your vehicle's resale value by keeping that factory-fresh finish intact for years.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PACKAGES -->
+  <section id="packages">
+    <div class="packages-header">
+      <div class="section-label reveal-up" style="justify-content:center">Protection Tiers</div>
+      <h2 class="section-title reveal-up">CHOOSE YOUR <span>PACKAGE</span></h2>
+      <p class="section-body reveal-up" style="max-width:480px;margin:20px auto 0;text-align:center;">Every vehicle and budget is different. Get in touch for a custom quote — all packages include our quality guarantee.</p>
+    </div>
+    <div class="packages-grid">
+      <div class="pkg-card reveal-up">
+        <div class="pkg-tier">Starter</div>
+        <div class="pkg-name">Essential Shield</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">
+          <li>Full Ceramic Window Tint</li>
+          <li>Partial Front PPF (Hood Edges + Mirrors)</li>
+          <li>1-Year Tint Warranty</li>
+          <li>Free Post-Install Inspection</li>
+        </ul>
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="pkg-cta">Get a Quote</a>
+      </div>
+      <div class="pkg-card featured reveal-up" data-delay=".12">
+        <div class="pkg-badge">Most Popular</div>
+        <div class="pkg-tier">Premier</div>
+        <div class="pkg-name">Full Armor</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">
+          <li>Full Ceramic Window Tint</li>
+          <li>Full-Front PPF (Hood, Bumper, Fenders, Mirrors)</li>
+          <li>Ceramic Coating (Full Exterior)</li>
+          <li>5-Year PPF Warranty</li>
+          <li>Lifetime Tint Warranty</li>
+          <li>Complimentary Detail Prep</li>
+        </ul>
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="pkg-cta">Get a Quote</a>
+      </div>
+      <div class="pkg-card reveal-up" data-delay=".24">
+        <div class="pkg-tier">Ultimate</div>
+        <div class="pkg-name">Total Defense</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">
+          <li>Full Ceramic Window Tint</li>
+          <li>Full-Body PPF Wrap</li>
+          <li>Premium Ceramic Coating</li>
+          <li>Interior Window Tint</li>
+          <li>10-Year XPEL Manufacturer Warranty</li>
+          <li>Priority Scheduling</li>
+          <li>Annual Inspection Included</li>
+        </ul>
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="pkg-cta">Get a Quote</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="page-cta">
+    <div class="cta-glow"></div>
+    <div class="cta-inner">
+      <div class="section-label reveal-up" style="justify-content:center">Ready to Start</div>
+      <h2 class="cta-title reveal-up">BOOK YOUR<br/><span>APPOINTMENT</span></h2>
+      <p class="cta-sub reveal-up">Appointment-only means your car gets our undivided attention from start to finish. Call or book online today.</p>
+      <div class="cta-btns reveal-up">
+        <a href="https://squareup.com/appointments/book/5tepjus8sbp1bt/LF0DFZTP2JMJS/services" target="_blank" class="btn-primary">Book Online <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="tel:6619322642" class="btn-ghost">(661) 932-2642</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="index.html" class="footer-logo">NEU<span>TEK</span> CUSTOMS</a>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="tesla.html">Tesla</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+    </ul>
+    <span class="footer-copy">© 2026 NeuTEK Customs, Inc.</span>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+    const dot = document.getElementById('cursor-dot'), ring = document.getElementById('cursor-ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+    (function tick(){ rx+=(mx-rx)*.14; ry+=(my-ry)*.14; dot.style.left=mx+'px'; dot.style.top=my+'px'; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tick); })();
+    window.addEventListener('scroll', () => {
+      document.getElementById('progress-bar').style.width = (window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY>60);
+    });
+    gsap.from('#ph1', { opacity:0, y:60, duration:1, ease:'power4.out', delay:.3 });
+    gsap.from('.page-tag', { opacity:0, y:20, duration:.8, ease:'power3.out', delay:.15 });
+    gsap.from('.page-sub', { opacity:0, y:24, duration:.8, ease:'power3.out', delay:.5 });
+    document.querySelectorAll('.reveal-up').forEach(el => {
+      gsap.to(el, { opacity:1, y:0, duration:.9, ease:'power3.out', delay:parseFloat(el.dataset.delay||0),
+        scrollTrigger:{ trigger:el, start:'top 88%', toggleActions:'play none none none' }});
+    });
+    document.querySelectorAll('.section-title').forEach(el => {
+      gsap.from(el, { clipPath:'inset(0 100% 0 0)', duration:1.1, ease:'power4.inOut', scrollTrigger:{ trigger:el, start:'top 85%' }});
+    });
+  </script>
+</body>
+</html>
