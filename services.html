@@ -7,10 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -49,7 +50,7 @@
     .nav-cta:hover { background: var(--gold-lt); }
 
     /* PAGE HERO */
-    .page-hero { position: relative; padding: 180px 60px 100px; overflow: hidden; background-image: url("street .png"); background-size: cover; background-position: center; }
+    .page-hero { position: relative; padding: 180px 60px 100px; overflow: hidden; min-height: 100vh; background-image: url("street%20.png"); background-size: cover; background-position: center; }
     .page-hero-bg { position: absolute; inset: 0; background: rgba(8,8,8,.6); }
     .page-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(62,207,207,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(62,207,207,.03) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 80% 80% at 20% 50%, black 20%, transparent 100%); }
     .page-hero-content { position: relative; z-index: 2; max-width: 700px; }
@@ -177,17 +178,20 @@
       <h1 class="page-h1" id="ph1">WHAT<br/><span>WE OFFER</span></h1>
       <p class="page-sub">Premium protection and enhancement services for every vehicle. We use only industry-leading XPEL products installed by certified technicians.</p>
     </div>
-    <!-- White Tesla 3D model — slides in from right on scroll -->
+    <!-- White Tesla 3D model — Three.js canvas, enters from left on scroll -->
     <div id="hero-car" style="
       position: absolute;
-      bottom: -20px;
+      bottom: 0;
+      left: 0;
       right: 0;
-      width: 55%;
-      max-width: 700px;
-      height: 400px;
+      margin: 0 auto;
+      width: 65%;
+      max-width: 820px;
+      height: 460px;
       z-index: 3;
+      pointer-events: none;
     ">
-      <model-viewer src="WHITETESLA.glb" style="width:100%;height:100%;background:transparent;--poster-color:transparent;" shadow-intensity="1" exposure="1.5" camera-orbit="330deg 85deg 6m"></model-viewer>
+      <canvas id="tesla-canvas" style="width:100%;height:100%;display:block;"></canvas>
     </div>
   </div>
   <!-- SERVICES DEEP DIVE -->
@@ -372,25 +376,137 @@
       gsap.from(el, { clipPath:'inset(0 100% 0 0)', duration:1.1, ease:'power4.inOut', scrollTrigger:{ trigger:el, start:'top 85%' }});
     });
 
-    /* ── Hero car: intercept scroll, move car, then release page ── */
+    /* ── Three.js Tesla 3D model ── */
     (function() {
-      const car = document.getElementById('hero-car');
-      let carX = window.innerWidth + 100;
-      let done = false;
-      gsap.set(car, { x: carX });
+      var canvas = document.getElementById('tesla-canvas');
+      var container = document.getElementById('hero-car');
+      var w = container.offsetWidth, h = container.offsetHeight;
 
-      function onWheel(e) {
-        if (done) return;
-        e.preventDefault();
-        carX -= Math.abs(e.deltaY) * 2.2;
-        if (carX <= 0) {
-          carX = 0;
-          done = true;
-          window.removeEventListener('wheel', onWheel);
-        }
-        gsap.set(car, { x: carX });
+      // Renderer
+      var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(w, h);
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.4;
+      renderer.shadowMap.enabled = true;
+
+      // Scene
+      var scene = new THREE.Scene();
+
+      // Camera
+      var camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 100);
+      camera.position.set(3.5, 1.4, 5.5);
+      camera.lookAt(0, 0.3, 0);
+
+      // Lighting
+      var ambient = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambient);
+
+      var key = new THREE.DirectionalLight(0xffffff, 1.2);
+      key.position.set(5, 8, 5);
+      scene.add(key);
+
+      var fill = new THREE.DirectionalLight(0x3ecfcf, 0.4);
+      fill.position.set(-5, 2, -3);
+      scene.add(fill);
+
+      var rim = new THREE.DirectionalLight(0xffffff, 0.8);
+      rim.position.set(-3, 6, -6);
+      scene.add(rim);
+
+      // Load GLB
+      var loader = new THREE.GLTFLoader();
+      var carModel = null;
+      loader.load('WHITETESLA-869bc043.glb',
+        function(gltf) {
+          carModel = gltf.scene;
+
+          // Center model
+          var box = new THREE.Box3().setFromObject(carModel);
+          var center = box.getCenter(new THREE.Vector3());
+          carModel.position.sub(center);
+
+          // Scale to fit nicely
+          var size = box.getSize(new THREE.Vector3());
+          var maxDim = Math.max(size.x, size.y, size.z);
+          var scale = 3.2 / maxDim;
+          carModel.scale.setScalar(scale);
+          carModel.position.y -= 0.2;
+
+          scene.add(carModel);
+        },
+        undefined,
+        function(err) { console.error('GLB load error:', err); }
+      );
+
+      // Render loop
+      var rafId;
+      function animate() {
+        rafId = requestAnimationFrame(animate);
+        if (carModel) carModel.rotation.y += 0.002;
+        renderer.render(scene, camera);
       }
-      window.addEventListener('wheel', onWheel, { passive: false });
+      animate();
+
+      // Resize
+      window.addEventListener('resize', function() {
+        w = container.offsetWidth;
+        h = container.offsetHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+    })();
+
+    /* ── Hero car: enter from LEFT, pin, then exit right on scroll-out ── */
+    (function() {
+      // Disable native smooth scroll — prevents pin spacer jitter with GSAP
+      document.documentElement.style.scrollBehavior = 'auto';
+
+      var vw = window.innerWidth;
+
+      // Start completely off-screen to the left
+      gsap.set('#hero-car', { x: -vw * 1.3, force3D: true });
+
+      // PHASE 1 — Pin the hero, scrub car in from left to center
+      var entranceTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.page-hero',
+          start: 'top top',
+          end: '+=800',
+          pin: true,
+          pinSpacing: true,
+          scrub: 1.5,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        }
+      });
+      entranceTl.to('#hero-car', {
+        x: 0,
+        ease: 'power2.out',
+        force3D: true,
+      });
+
+      // PHASE 2 — As hero scrolls off the top, exit car to the right
+      gsap.to('#hero-car', {
+        x: vw * 1.3,
+        ease: 'power2.in',
+        force3D: true,
+        scrollTrigger: {
+          trigger: '.page-hero',
+          start: 'bottom 90%',
+          end: 'bottom -10%',
+          scrub: 1.5,
+          invalidateOnRefresh: true,
+        }
+      });
+
+      // Re-calculate on resize
+      window.addEventListener('resize', function() {
+        vw = window.innerWidth;
+        ScrollTrigger.refresh();
+      });
     })();
   </script>
 </body>
