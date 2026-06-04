@@ -394,14 +394,14 @@
       // Car starts off-screen to the right
       gsap.set('#hero-car', { x: window.innerWidth + 200, force3D: true });
 
-      // Pin entire wrapper, scrub car from right to center
+      // Pin entire wrapper, scrub car to center of hero (stops at ~25% from left)
       gsap.to('#hero-car', {
-        x: 0,
+        x: -(window.innerWidth * 0.25),
         ease: 'none',
         scrollTrigger: {
           trigger: '#services-hero-pin',
           start: 'top top',
-          end: '+=900',
+          end: '+=1400',
           pin: true,
           pinSpacing: true,
           scrub: 1.2,
