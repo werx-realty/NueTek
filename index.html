@@ -987,7 +987,7 @@
       </p>
 
       <div class="about-features">
-        <div class="feature-row reveal-up">
+        <div class="feature-row">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </div>
@@ -996,7 +996,7 @@
             <div class="feature-sub">Factory-backed warranty on all XPEL products</div>
           </div>
         </div>
-        <div class="feature-row reveal-up">
+        <div class="feature-row">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
@@ -1005,7 +1005,7 @@
             <div class="feature-sub">Peace of mind protection on select packages</div>
           </div>
         </div>
-        <div class="feature-row reveal-up">
+        <div class="feature-row">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
           </div>
@@ -1119,7 +1119,7 @@
     <div class="cta-bg"></div>
     <div class="cta-inner">
       <div class="section-label reveal-up" style="justify-content:center">Get Started</div>
-      <h2 class="cta-title reveal-up">
+      <h2 class="cta-title">
         YOUR CAR<br/>
         <span class="line2">DESERVES THE BEST.</span>
       </h2>
@@ -1168,6 +1168,12 @@
   <!-- ══════════════════ SCRIPTS ══════════════════ -->
   <script>
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+    /* Always start at the very top on (re)load so the hero video begins on its first frame */
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+    window.addEventListener('load', () => { window.scrollTo(0, 0); ScrollTrigger.refresh(); });
+    window.addEventListener('beforeunload', () => window.scrollTo(0, 0));
 
     /* ─── HERO: scroll-scrubbed spinning car video ───
        The hero pins in place while you scroll; the video playhead is tied
